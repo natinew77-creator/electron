@@ -196,7 +196,6 @@ jobs:
       run: |
         if [ "${{ inputs.target-platform }}" = "win" ]; then
           ls -la src/third_party/depot_tools/win_toolchain/vs_files*
-          //Check if src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION exist
           ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
           rm -rf src/third_party/depot_tools/win_toolchain/vs_files*
         fi
@@ -206,8 +205,7 @@ jobs:
         fi
         gclient runhooks --gclientfile=tmpgclient
         # Fix VS Toolchain
-        if [ "${{ inputs.target-platform }}" = "windows" ]; then          
-          //Check if src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION exist
+        if [ "${{ inputs.target-platform }}" = "windows" ]; then
           echo "CHECKING BEFORE FIXING VS TOOLCHAIN"
           ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
           e d python3 src/build/vs_toolchain.py update --force
