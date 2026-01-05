@@ -195,15 +195,25 @@ jobs:
     - name: Run Electron Only Hooks
       run: |
         if [ "${{ inputs.target-platform }}" = "win" ]; then
-          echo "Windows platform detected, listing apache-win32 before gclient runhooks"
-          ls -la src/third_party/apache-win32/bin/
-
+          ls -la src/third_party/depot_tools/win_toolchain/vs_files*
+          //Check if src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION exist
+          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          rm -rf src/third_party/depot_tools/win_toolchain/vs_files*
         fi
         echo "solutions=[{'name':'src/electron','url':None,'deps_file':'DEPS','custom_vars':{'process_deps':False},'managed':False}]" > tmpgclient
         if [ "${{ inputs.target-platform }}" = "win" ]; then          
           echo "target_os=['win']" >> tmpgclient
         fi
         gclient runhooks --gclientfile=tmpgclient
+        # Fix VS Toolchain
+        if [ "${{ inputs.target-platform }}" = "windows" ]; then          
+          //Check if src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION exist
+          echo "CHECKING BEFORE FIXING VS TOOLCHAIN"
+          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          e d python3 src/build/vs_toolchain.py update --force
+          echo "CHECKING AFTER FIXING VS TOOLCHAIN"
+          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+        fi
     - name: Regenerate DEPS Hash
       run: |
         (cd src/electron && git checkout .) && node src/electron/script/generate-deps-hash.js
