@@ -196,7 +196,10 @@ jobs:
       run: |
         if [ "${{ inputs.target-platform }}" = "win" ]; then
           ls -la src/third_party/depot_tools/win_toolchain/vs_files*
-          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          if [ -f src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION ]; then
+            echo "Case insensitive file exists"
+            ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          fi          
           rm -rf src/third_party/depot_tools/win_toolchain/vs_files*
         fi
         echo "solutions=[{'name':'src/electron','url':None,'deps_file':'DEPS','custom_vars':{'process_deps':False},'managed':False}]" > tmpgclient
@@ -207,10 +210,16 @@ jobs:
         # Fix VS Toolchain
         if [ "${{ inputs.target-platform }}" = "windows" ]; then
           echo "CHECKING BEFORE FIXING VS TOOLCHAIN"
-          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          if [ -f src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION ]; then
+            echo "Case insensitive file exists before fix"
+            ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          fi 
           e d python3 src/build/vs_toolchain.py update --force
           echo "CHECKING AFTER FIXING VS TOOLCHAIN"
-          ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          if [ -f src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION ]; then
+            echo "Case insensitive file exists after fix"
+            ls -la src/third_party/depot_tools/win_toolchain/vs_files/efe71370d5/vs_VERSION
+          fi 
         fi
     - name: Regenerate DEPS Hash
       run: |
